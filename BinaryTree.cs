@@ -14,7 +14,7 @@ namespace BinaryViewer
     {
         public BinaryTree<T>? rightNode { get; private set; } // right node of the binary tree.
         public BinaryTree<T>? leftNode { get; private set; } // left node of the binary tree.
-        private BinaryTree<T>? father; // the father of the node;
+        private BinaryTree<T>? father; // the father of the node.
         public T value { get; set; } // the value of the current node.
 
         public BinaryTree(T value)
@@ -49,6 +49,6 @@ namespace BinaryViewer
         public BinaryTree<T>? GetRight() => this.rightNode;
         public BinaryTree<T>? GetLeft() => this.leftNode;
 
-        public override string ToString() => this.value.ToString();
+        public override string? ToString() => this.value?.ToString();
     }
 }

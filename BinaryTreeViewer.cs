@@ -14,7 +14,7 @@ namespace BinaryViewer
     public static class BinaryTreeViewer
     {
         private static int tempCount = 1; // the number of temporary files we've created.
-        private static string fileName => $"BINTREE{tempCount}.html";
+        private static string fileName => $"BINTREE{tempCount}.html"; //name structure of BINTREE files.
 
         /// <summary>
         /// Sets the value of tempCount according to the previous saved_trees.
@@ -53,7 +53,8 @@ namespace BinaryViewer
                 InitializeFileStructure(); // we initialize the file structure.
                 DrawElement(tree, (0, 0));      
                 File.AppendAllText(fileName, "</html>");
-                Process.Start(@"cmd.exe", "/c " + fileName);
+                if(OperatingSystem.IsWindows())
+                    Process.Start(@"cmd.exe", "/c " + fileName);
                 tempCount++;
                 return;
             }
@@ -73,19 +74,19 @@ namespace BinaryViewer
 
             File.AppendAllText(fileName, "</html>"); //finishes the document.
 
-            //show tree
+            //shows the tree to the user. (opens the HTML file on browser).
             Process.Start(@"cmd.exe", "/c " + fileName);
 
-            tempCount++; //for the next temp file.
+            tempCount++; //increases by 1 the tempCount for the next file name.
         }
 
         /// <summary>
-        /// Deletes all of the temporary tree files that were created.
+        /// Deletes all of the BINTREE files that were created on runtime.
         /// </summary>
         public static void ClearTrees()
         {
             string directory = Directory.GetCurrentDirectory();
-            Regex reg = new Regex(@"BINTREE\d+\.html");
+            Regex reg = new Regex(@"BINTREE\d+\.html"); //the structure of a BINTREE runtime file.
 
             List<string> fileNames = Directory.GetFiles(directory).ToList();
             fileNames = reg.Matches(string.Join(" ", fileNames)).Select(x => x.Value).ToList();
@@ -145,6 +146,20 @@ namespace BinaryViewer
         /// <param name="position"></param>
         private static void DrawElement<T>(BinaryTree<T> node, (double x, double y) position)
         {
+            //DIAMOND COLLISION MEANING -> 
+            /* 
+                    ( )
+                    / \
+                  ( ) ( )
+                    \ /
+                    ( ) -> collision (two different nodes placed on the same place in the graph
+                                      because the distance between each node to his father is
+                                      equal).
+             */
+            //In a case of diamond collision one node might override the other node on a graph.
+            //Because we want to see both nodes on the graph then we color nodes that
+            //comes from right and nodes that comes from left
+            //with two different colors -> Red & Blue -> so we'll be able to see the differences.
             string color = "red"; //Red -> left side node, Blue -> right side node.
 
             if (node.GetParent()?.rightNode == node)
@@ -155,30 +170,26 @@ namespace BinaryViewer
         }
 
         /// <summary>
-        /// Creating a File.
+        /// Creating a BINTREE file structre.
         /// </summary>
         /// <returns></returns>
         private static string InitializeFileStructure()
         {
+            //The basic content of a BINTREE file.
             string content = @"<html>
-
 <style>
 	#circle{
 		border-radius: 50%;
 		display: inline-block;
 		border: 1px solid black;
 	}
-
-
 	.a{
 		padding: 50px;
 	}
-
 	.b{
 		width: 70px;
 		height: 70px;
 	}
-
 	 .line{
 width: 150px;
 height: 150px;
