@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BinaryViewer
+namespace BinaryTreeViewer
 {
     public partial class BinaryTree<T>
     {
-        internal static BinaryTree<T> max_left_node;
+        private BinaryTree<T>? max_left_node;
 
         /// <summary>
         /// Finds the max left offset from the starting node.
@@ -17,7 +17,17 @@ namespace BinaryViewer
         /// <param name="head">The beginning of the tree we want to draw.</param>
         /// <param name="left_offset"></param>
         /// <param name="max_offset"></param>
-        internal static void LeftNode(BinaryTree<T> head, int left_offset, ref int max_offset)
+        /// 
+
+        internal (BinaryTree<T>?, int max_offset) LeftNode()
+        {
+            int max_offset = 0;
+
+            LeftNode(this, 0, ref max_offset);
+            return (max_left_node, max_offset);
+        }
+
+        private void LeftNode(BinaryTree<T> head, int left_offset, ref int max_offset)
         {
             if (head.leftNode != null)
             {
@@ -50,6 +60,10 @@ namespace BinaryViewer
         /// <returns></returns>
         internal static int RowsFromTop(BinaryTree<T> left_node, BinaryTree<T> top)
         {
+            //if we don't have any left node.
+            if (left_node == null)
+                return 0;
+
             int rows = 0;
 
             while(left_node != top)

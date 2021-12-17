@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BinaryViewer
+﻿
+namespace BinaryTreeViewer
 {
     /// <summary>
     /// Represents a Binary Tree class used for the BinaryTreeViewer.

@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Text.RegularExpressions;
 
-namespace BinaryViewer
+namespace BinaryTreeViewer
 {
     /// <summary>
     /// Shows in an HTML document a graph of the tree.
     /// RECOMMENDATION: Use break-point on the line of the BinaryTreeViewer.View .
     /// </summary>
-    public static class BinaryTreeViewer
+    public static class BTViewer
     {
         private static int tempCount = 1; // the number of temporary files we've created.
         private static string fileName => $"BINTREE{tempCount}.html"; //name structure of BINTREE files.
@@ -19,7 +15,7 @@ namespace BinaryViewer
         /// <summary>
         /// Sets the value of tempCount according to the previous saved_trees.
         /// </summary>
-        static BinaryTreeViewer()
+        static BTViewer()
         {
             string directory = Directory.GetCurrentDirectory();
             Regex reg = new Regex(@"BINTREE\d+\.html"); //we check what is the latest binary tree file.
@@ -53,20 +49,25 @@ namespace BinaryViewer
                 InitializeFileStructure(); // we initialize the file structure.
                 DrawElement(tree, (0, 0));      
                 File.AppendAllText(fileName, "</html>");
+                
+                //If the operating System is windows
                 if(OperatingSystem.IsWindows())
                     Process.Start(@"cmd.exe", "/c " + fileName);
+
+                //If the operating System is Linux
+                if (OperatingSystem.IsLinux())
+                    Process.Start(@"xdg-open " + fileName);
                 tempCount++;
                 return;
             }
 
-            int max_left_node = 0; //how much left we take from the beginning (max value).
-            BinaryTree<T>.LeftNode(tree, 0, ref max_left_node); // the max left node.
-            BinaryTree<T> most_left = BinaryTree<T>.max_left_node;
-            int rows = BinaryTree<T>.RowsFromTop(most_left, tree); //how much offset we take from the top to the max left node.
+            //how much left we take from the beginning (max value). -> max_left_offset
+            (BinaryTree<T>? leftNode, int max_left_offset) = tree.LeftNode(); // the max left node.
+            int rows = BinaryTree<T>.RowsFromTop(leftNode, tree); //how much offset we take from the top to the max left node.
 
             // we start by finding the position of the head of the tree.
             (int x, int y) head_position = (0, 0);
-            head_position.x = max_left_node * (100 + 50); //the size of every circle + offset between circles.
+            head_position.x = max_left_offset * (100 + 50); //the size of every circle + offset between circles.
             head_position.x = rows * (100 + 50); //the size of every circle + offset between circles.
 
             InitializeFileStructure();
