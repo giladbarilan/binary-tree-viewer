@@ -16,3 +16,21 @@ To show the tree -> pass the head of the tree as an argument to BinaryTreeViewer
 ```csharp
 BTViewer.View(tree);
 ```
+
+## How is Data Saved?
+
+The binary-tree HTML files are saved in chronological order by using a counter.
+The file name structure for the trees is "BINTREE<SomeNumber>.html".
+
+### How to delete the data?
+
+If you want to delete the temporary binary trees -> use the function ClearTrees inside BTViewer as the following:
+
+```csharp
+BTViewer.ClearTrees(TreesToClear treesToClear);
+```
+
+#### There are three options to delete:
+Delete the files that were created on the current run -> treesToClear.CurrentRun
+Delete the files that were created on previous runs -> treesToClear.PreviousRuns
+Delete all of the BINTREE temporary files -> (treesToClear.PreviousRuns | treesToClear.CurrentRun)

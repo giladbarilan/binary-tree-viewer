@@ -9,6 +9,8 @@ namespace BinaryTreeViewer
     /// </summary>
     public static class BTViewer
     {
+        private static int StartingTempCount = 1; //the starting temp count so we know how many
+        //trees we've created.
         private static int tempCount = 1; // the number of temporary files we've created.
         private static string fileName => $"BINTREE{tempCount}.html"; //name structure of BINTREE files.
 
@@ -30,6 +32,8 @@ namespace BinaryTreeViewer
             }
             else
                 tempCount = 1;
+
+            StartingTempCount = tempCount;
         }
 
         /// <summary>
@@ -76,22 +80,35 @@ namespace BinaryTreeViewer
             File.AppendAllText(fileName, "</html>"); //finishes the document.
 
             //shows the tree to the user. (opens the HTML file on browser).
-            Process.Start(@"cmd.exe", "/c " + fileName);
+            Process run_process = Process.Start(@"cmd.exe", "/c " + fileName);
+            run_process.WaitForExit();
 
-            tempCount++; //increases by 1 the tempCount for the next file name.
+            tempCount++;
         }
 
         /// <summary>
-        /// Deletes all of the BINTREE files that were created on runtime.
+        /// Deletes the trees we want to clear.
         /// </summary>
-        public static void ClearTrees()
+        public static void ClearTrees(TreesToClear treesToClear)
         {
             string directory = Directory.GetCurrentDirectory();
             Regex reg = new Regex(@"BINTREE\d+\.html"); //the structure of a BINTREE runtime file.
+            Regex findCount = new Regex(@"\d+");
 
             List<string> fileNames = Directory.GetFiles(directory).ToList();
             fileNames = reg.Matches(string.Join(" ", fileNames)).Select(x => x.Value).ToList();
-            fileNames.ForEach(x => File.Delete(x)); // we delete all of the temporary files.
+
+            if (((int)treesToClear & 0b1) != 0) //current run.
+            {
+                fileNames.Where(x => int.Parse(findCount.Match(x).Value) >= StartingTempCount)
+                         .ToList().ForEach(x => File.Delete(x));
+            }
+
+            if(((int)treesToClear & 0b10) != 0) //other runs.
+            {
+                fileNames.Where(x => int.Parse(findCount.Match(x).Value) < StartingTempCount)
+                         .ToList().ForEach(x => File.Delete(x));
+            }
         }
 
         /// <summary>
@@ -203,4 +220,10 @@ position: absolute;
             return fileName;
         }
     }
+}
+
+public enum TreesToClear
+{
+    CurrentRun = 0b1,
+    PreviousRuns = 0b10
 }
