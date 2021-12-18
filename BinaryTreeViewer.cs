@@ -48,7 +48,7 @@ namespace BinaryTreeViewer
                 return;
 
             // in case there is only one node on the tree (only the head).
-            if(tree.rightNode == null && tree.leftNode == null)
+            if(tree.GetRightNode() == null && tree.GetLeftNode() == null)
             {
                 InitializeFileStructure(); // we initialize the file structure.
                 DrawElement(tree, (0, 0));      
@@ -66,7 +66,7 @@ namespace BinaryTreeViewer
             }
 
             //how much left we take from the beginning (max value). -> max_left_offset
-            (BinaryTree<T>? leftNode, int max_left_offset) = tree.LeftNode(); // the max left node.
+            (BinaryTree<T>? leftNode, int max_left_offset) = tree.GetMaxLeft(); // the max left node.
             int rows = BinaryTree<T>.RowsFromTop(leftNode, tree); //how much offset we take from the top to the max left node.
 
             // we start by finding the position of the head of the tree.
@@ -121,16 +121,16 @@ namespace BinaryTreeViewer
         {
             DrawElement(head, position);
 
-            if(head.rightNode != null)
+            if(head.GetRightNode() != null)
             {
                 DrawLine(position, (position.x + 150, position.y + 150));
-                DrawTree(head.rightNode, (position.x + 150, position.y + 150));
+                DrawTree(head.GetRightNode(), (position.x + 150, position.y + 150));
             }
 
-            if(head.leftNode != null)
+            if(head.GetLeftNode() != null)
             {
                 DrawLine(position, (position.x - 150, position.y + 150));
-                DrawTree(head.leftNode, (position.x - 150, position.y + 150));
+                DrawTree(head.GetLeftNode(), (position.x - 150, position.y + 150));
             }
         }
 
@@ -180,7 +180,7 @@ namespace BinaryTreeViewer
             //with two different colors -> Red & Blue -> so we'll be able to see the differences.
             string color = "red"; //Red -> left side node, Blue -> right side node.
 
-            if (node.GetParent()?.rightNode == node)
+            if (node.GetParent()?.GetRightNode() == node)
                 color = "blue";
 
             File.AppendAllText(fileName, $"\n<div class ='b' id = 'circle' style='border: 1px solid {color};position: absolute; left: {position.x}px; top: {position.y}px;'></div>");

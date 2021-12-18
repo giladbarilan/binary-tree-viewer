@@ -19,31 +19,31 @@ namespace BinaryTreeViewer
         /// <param name="max_offset"></param>
         /// 
 
-        internal (BinaryTree<T>?, int max_offset) LeftNode()
+        internal (BinaryTree<T>?, int max_offset) GetMaxLeft()
         {
             int max_offset = 0;
 
-            LeftNode(this, 0, ref max_offset);
+            GetMaxLeft(this, 0, ref max_offset);
             return (max_left_node, max_offset);
         }
 
-        private void LeftNode(BinaryTree<T> head, int left_offset, ref int max_offset)
+        private void GetMaxLeft(BinaryTree<T> head, int left_offset, ref int max_offset)
         {
-            if (head.leftNode != null)
+            if (head.GetLeftNode() != null)
             {
                 left_offset += 1;
 
                 if(left_offset > max_offset)
                 {
-                    max_left_node = head.leftNode;
+                    max_left_node = head.GetLeftNode();
                 }
 
-                LeftNode(head.leftNode, left_offset, ref max_offset);
+                GetMaxLeft(head.GetLeftNode(), left_offset, ref max_offset);
             }
-            if (head.rightNode != null)
+            if (head.GetRightNode() != null)
             {
                 left_offset -= 1;
-                LeftNode(head.rightNode, left_offset, ref max_offset);
+                GetMaxLeft(head.GetRightNode(), left_offset, ref max_offset);
             }
 
             if(left_offset > max_offset)
