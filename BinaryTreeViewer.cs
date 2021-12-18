@@ -75,7 +75,7 @@ position: absolute;
             if(tree.GetRightNode() == null && tree.GetLeftNode() == null)
             {
                 InitializeFileStructure(); // we initialize the file structure.
-                DrawElement(tree, (0, 0));      
+                DrawElement(tree, (0, 0), false);      
                 File.AppendAllText(fileName, "</html>");
                 RunTree();
 
@@ -91,7 +91,7 @@ position: absolute;
             head_position.x = max_left_offset * (100 + 50); //the size of every circle + offset between circles.
 
             InitializeFileStructure();
-            DrawTree(tree, head_position);
+            DrawTree(tree, head_position, false);
 
             File.AppendAllText(fileName, "</html>"); //finishes the document.
 
@@ -131,20 +131,20 @@ position: absolute;
         /// <typeparam name="T"></typeparam>
         /// <param name="head">The head of the tree.</param>
         /// <param name="position">The starting position to draw the tree.</param>
-        private static void DrawTree<T>(BinaryTree<T> head, (int x, int y) position)
+        private static void DrawTree<T>(BinaryTree<T> head, (int x, int y) position, bool right)
         {
-            DrawElement(head, position);
+            DrawElement(head, position, right);
 
             if(head.GetRightNode() != null)
             {
                 DrawLine(position, (position.x + 150, position.y + 150));
-                DrawTree(head.GetRightNode(), (position.x + 150, position.y + 150));
+                DrawTree(head.GetRightNode(), (position.x + 150, position.y + 150), true);
             }
 
             if(head.GetLeftNode() != null)
             {
                 DrawLine(position, (position.x - 150, position.y + 150));
-                DrawTree(head.GetLeftNode(), (position.x - 150, position.y + 150));
+                DrawTree(head.GetLeftNode(), (position.x - 150, position.y + 150), false);
             }
         }
 
@@ -176,7 +176,7 @@ position: absolute;
         /// <typeparam name="T"></typeparam>
         /// <param name="node"></param>
         /// <param name="position"></param>
-        private static void DrawElement<T>(BinaryTree<T> node, (double x, double y) position)
+        private static void DrawElement<T>(BinaryTree<T> node, (double x, double y) position, bool right)
         {
             //DIAMOND COLLISION MEANING -> 
             /* 
@@ -194,7 +194,7 @@ position: absolute;
             //with two different colors -> Red & Blue -> so we'll be able to see the differences.
             string color = "red"; //Red -> left side node, Blue -> right side node.
 
-            if (node.GetParent()?.GetRightNode() == node)
+            if (right)
                 color = "blue";
 
             File.AppendAllText(fileName, $"\n<div class ='b' id = 'circle' style='border: 1px solid {color};position: absolute; left: {position.x}px; top: {position.y}px;'></div>");
