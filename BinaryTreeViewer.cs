@@ -12,6 +12,7 @@ namespace BinaryTreeViewer
         private static int StartingTempCount = 1; //the starting temp count so we know how many
         //trees we've created.
         private static int tempCount = 1; // the number of temporary files we've created.
+        private static readonly string BINTREE_CSS_FILENAME = "BINTREEINITIALIZER.css";
         private static string fileName => $"BINTREE{tempCount}.html"; //name structure of BINTREE files.
 
         /// <summary>
@@ -20,6 +21,29 @@ namespace BinaryTreeViewer
         static BTViewer()
         {
             string directory = Directory.GetCurrentDirectory();
+
+            if(!Directory.GetFiles(directory).Contains(BINTREE_CSS_FILENAME))
+            {
+                File.WriteAllText(BINTREE_CSS_FILENAME, @"#circle{
+		border-radius: 50%;
+		display: inline-block;
+		border: 1px solid black;
+	}
+	.a{
+		padding: 50px;
+	}
+	.b{
+		width: 70px;
+		height: 70px;
+	}
+	 .line{
+width: 150px;
+height: 150px;
+border-bottom: 1px solid black;
+position: absolute;
+}");
+            }
+
             Regex reg = new Regex(@"BINTREE\d+\.html"); //we check what is the latest binary tree file.
 
             List<string> fileNames = Directory.GetFiles(directory).ToList();
@@ -53,10 +77,7 @@ namespace BinaryTreeViewer
                 InitializeFileStructure(); // we initialize the file structure.
                 DrawElement(tree, (0, 0));      
                 File.AppendAllText(fileName, "</html>");
-                
-                //If the operating System is windows
-                if(OperatingSystem.IsWindows())
-                    Process.Start(@"cmd.exe", "/c " + fileName);
+                RunTree();
 
                 tempCount++;
                 return;
@@ -195,28 +216,7 @@ namespace BinaryTreeViewer
         private static string InitializeFileStructure()
         {
             //The basic content of a BINTREE file.
-            string content = @"<html>
-<style>
-	#circle{
-		border-radius: 50%;
-		display: inline-block;
-		border: 1px solid black;
-	}
-	.a{
-		padding: 50px;
-	}
-	.b{
-		width: 70px;
-		height: 70px;
-	}
-	 .line{
-width: 150px;
-height: 150px;
-border-bottom: 1px solid black;
-position: absolute;
-}
-</style>";
-
+            string content = @$"<html><link rel=""stylesheet"" href=""{BINTREE_CSS_FILENAME}"">";
             File.WriteAllText(fileName, content);
             return fileName;
         }
