@@ -58,30 +58,23 @@ namespace BinaryTreeViewer
                 if(OperatingSystem.IsWindows())
                     Process.Start(@"cmd.exe", "/c " + fileName);
 
-                //If the operating System is Linux
-                if (OperatingSystem.IsLinux())
-                    Process.Start(@"xdg-open " + fileName);
                 tempCount++;
                 return;
             }
 
             //how much left we take from the beginning (max value). -> max_left_offset
-            (BinaryTree<T>? leftNode, int max_left_offset) = tree.GetMaxLeft(); // the max left node.
-            int rows = BinaryTree<T>.RowsFromTop(leftNode, tree); //how much offset we take from the top to the max left node.
+            int max_left_offset = tree.GetMaxLeft(); // the max left node.
 
             // we start by finding the position of the head of the tree.
-            (int x, int y) head_position = (0, 0);
+            (int x, int y) head_position = (0, 50);
             head_position.x = max_left_offset * (100 + 50); //the size of every circle + offset between circles.
-            head_position.x = rows * (100 + 50); //the size of every circle + offset between circles.
 
             InitializeFileStructure();
             DrawTree(tree, head_position);
 
             File.AppendAllText(fileName, "</html>"); //finishes the document.
 
-            //shows the tree to the user. (opens the HTML file on browser).
-            Process run_process = Process.Start(@"cmd.exe", "/c " + fileName);
-            run_process.WaitForExit();
+            RunTree();
 
             tempCount++;
         }
@@ -185,6 +178,14 @@ namespace BinaryTreeViewer
 
             File.AppendAllText(fileName, $"\n<div class ='b' id = 'circle' style='border: 1px solid {color};position: absolute; left: {position.x}px; top: {position.y}px;'></div>");
             File.AppendAllText(fileName, $"\n<div style='color:{color};position: absolute; left: {position.x - (node.ToString().Length / 2) * 4 + 32}px; top: {position.y + 28}px;'>{node.value}</div>");
+        }
+        
+        //Opens the tree.
+        private static void RunTree()
+        {
+            //shows the tree to the user. (opens the HTML file on browser).
+            Process run_process = Process.Start(@"cmd.exe", "/c " + fileName);
+            run_process.WaitForExit();
         }
 
         /// <summary>
